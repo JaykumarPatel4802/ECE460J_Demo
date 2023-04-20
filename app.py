@@ -47,7 +47,9 @@ genius = lyricsgenius.Genius(genius_key, skip_non_songs=True, excluded_terms=["(
 def get_lyrics(song_name, artist_name):
     try:
         song = genius.search_song(song_name, artist_name)
-    except:
+    except Exception as e:
+        print("Exception : ", repr(e))
+        print("in except")
         return "ERROR"
     original_lyrics = song.lyrics
     lyrics = original_lyrics.split('\n')[1:]
@@ -63,6 +65,8 @@ def get_lyrics(song_name, artist_name):
 
 def generate_song():
     st.session_state.text = st_text_area
+    
+    print(st_text_area)
 
     input_text = st_text_area
     input_text = input_text.split(' by ')
