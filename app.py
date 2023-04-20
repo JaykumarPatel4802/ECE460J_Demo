@@ -46,7 +46,8 @@ if 'text' not in st.session_state:
 st_text_area = st.text_area('Song to generate recommendations for', value=st.session_state.text, height=500)
 
 
-genius_key = os.environ.get('LYRIC_GENIUS_KEY')
+# genius_key = os.environ.get('LYRIC_GENIUS_KEY')
+genius_key = st.secrets['LYRIC_GENIUS_KEY']
 if (genius_key == None or genius_key == ""):
     print("The genius key is: ", str(genius_key))
 genius = lyricsgenius.Genius(genius_key, skip_non_songs=True, excluded_terms=["(Remix)", "(Live)"], remove_section_headers=True, timeout = 60)
