@@ -16,6 +16,9 @@ print(os.environ.get("LYRIC_GENIUS_KEY") == st.secrets["LYRIC_GENIUS_KEY"])
 if (os.environ.get("LYRIC_GENIUS_KEY") == None):
     print("Key is None")
 
+print("Experimental query params")
+print(st.experimental_get_query_params())
+
 model_name = "afnanmmir/t5-base-abstract-to-plain-language-1"
 max_input_length = 1024
 max_output_length = 256
