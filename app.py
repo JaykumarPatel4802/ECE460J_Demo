@@ -13,6 +13,8 @@ import os
 
 print("SAME OR DIFF KEYS")
 print(os.environ.get("LYRIC_GENIUS_KEY") == st.secrets["LYRIC_GENIUS_KEY"])
+if (os.environ.get("LYRIC_GENIUS_KEY") == None):
+    print("Key is None")
 
 model_name = "afnanmmir/t5-base-abstract-to-plain-language-1"
 max_input_length = 1024
@@ -42,7 +44,11 @@ st_text_area = st.text_area('Song to generate recommendations for', value=st.ses
 
 
 genius_key = os.environ.get('LYRIC_GENIUS_KEY')
+if (genius_key == None or genius_key == ""):
+    print("The genius key is: ", str(genius_key))
 genius = lyricsgenius.Genius(genius_key, skip_non_songs=True, excluded_terms=["(Remix)", "(Live)"], remove_section_headers=True, timeout = 60)
+print("Genius is: ")
+print(str(genius))
 
 def get_lyrics(song_name, artist_name):
     try:
