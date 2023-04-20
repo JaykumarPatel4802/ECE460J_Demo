@@ -7,10 +7,10 @@ import math
 import torch
 import lyricsgenius
 from unidecode import unidecode
-# from dotenv import load_dotenv
-# load_dotenv()
-# import os
-
+from dotenv import load_dotenv
+load_dotenv()
+import os
+os.environ["db_username"] == st.secrets["db_username"]
 
 model_name = "afnanmmir/t5-base-abstract-to-plain-language-1"
 max_input_length = 1024
@@ -39,8 +39,7 @@ if 'text' not in st.session_state:
 st_text_area = st.text_area('Song to generate recommendations for', value=st.session_state.text, height=500)
 
 
-# genius_key = os.environ.get('LYRIC_GENIUS_KEY')
-genius_key = st.secrets["LYRIC_GENIUS_KEY"]
+genius_key = os.environ.get('LYRIC_GENIUS_KEY')
 genius = lyricsgenius.Genius(genius_key, skip_non_songs=True, excluded_terms=["(Remix)", "(Live)"], remove_section_headers=True, timeout = 60)
 
 def get_lyrics(song_name, artist_name):
