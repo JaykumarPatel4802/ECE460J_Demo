@@ -18,9 +18,6 @@ def get_songs(indices):
         artist_name = sample_dataset.loc[i, 'artists']
         songs[song_name] = artist_name
     return songs
-    
-
-
 
 new_features = [[0.637, 0.643, 4, -6.571, 1, 0.0519, 0.13, 1.8e06, 0.142, 0.533, 97.008]]
 k = 5
