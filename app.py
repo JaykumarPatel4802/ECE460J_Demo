@@ -10,7 +10,9 @@ from unidecode import unidecode
 from dotenv import load_dotenv
 load_dotenv()
 import os
-os.environ["db_username"] == st.secrets["db_username"]
+
+print("SAME OR DIFF KEYS")
+print(os.environ.get("LYRIC_GENIUS_KEY") == st.secrets["LYRIC_GENIUS_KEY"])
 
 model_name = "afnanmmir/t5-base-abstract-to-plain-language-1"
 max_input_length = 1024
