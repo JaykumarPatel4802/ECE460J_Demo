@@ -1,5 +1,7 @@
 # This is where we host the app
 
+from cosine_similarity.cosine_similarity import compute_cosine_similarity
+from predict_summaries.model_prediction import predict_summary
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import nltk
@@ -21,16 +23,16 @@ st.header("Get your song recommendations here!")
 
 st_model_load = st.text('Loading song generator model...')
 
-@st.cache(allow_output_mutation=True)
-def load_model():
-    print("Loading model...")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    nltk.download('punkt')
-    print("Model loaded!")
-    return tokenizer, model
+# @st.cache(allow_output_mutation=True)
+# def load_model():
+#     print("Loading model...")
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+#     nltk.download('punkt')
+#     print("Model loaded!")
+#     return tokenizer, model
 
-tokenizer, model = load_model()
+# tokenizer, model = load_model()
 st.success('Model loaded!')
 st_model_load.text("")
 
@@ -71,17 +73,22 @@ def generate_song():
     print(lyrics)
 
     # tokenize text
-    inputs = ["summarize: " + lyrics]
-    inputs = tokenizer(inputs, return_tensors="pt", max_length=max_input_length, truncation=True)
+    # inputs = ["summarize: " + lyrics]
+    # inputs = tokenizer(inputs, return_tensors="pt", max_length=max_input_length, truncation=True)
 
     # compute predictions
-    outputs = model.generate(**inputs, do_sample=True, max_length=max_output_length, early_stopping=True, num_beams=8, length_penalty=2.0, no_repeat_ngram_size=2, min_length=min_output_length)
-    decoded_outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
-    predicted_summaries = nltk.sent_tokenize(decoded_outputs.strip())
+    # outputs = model.generate(**inputs, do_sample=True, max_length=max_output_length, early_stopping=True, num_beams=8, length_penalty=2.0, no_repeat_ngram_size=2, min_length=min_output_length)
+    # decoded_outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
+    # predicted_summaries = nltk.sent_tokenize(decoded_outputs.strip())
+    predicted_summaries = predict_summary(lyrics)
     print("Predicted Summaries: ")
     print(predicted_summaries)
     print(type(predicted_summaries))
     overall_summary =  " ".join(predicted_summaries)
+
+    track_ids = compute_cosine_similarity(overall_summary)
+    print("Track IDs: ")
+    print(track_ids)
 
     st.session_state.summaries = [overall_summary]
 
