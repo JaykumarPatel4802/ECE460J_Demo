@@ -2,6 +2,8 @@
 
 from cosine_similarity.cosine_similarity import compute_cosine_similarity
 from predict_summaries.model_prediction import predict_summary
+from nearest_song.nearest_songs import get_nearest_songs
+from nearest_song.spotify import get_song_features
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import nltk
@@ -12,14 +14,6 @@ from unidecode import unidecode
 from dotenv import load_dotenv
 load_dotenv()
 import os
-
-print("SAME OR DIFF KEYS")
-print(os.environ.get("LYRIC_GENIUS_KEY") == st.secrets["LYRIC_GENIUS_KEY"])
-if (os.environ.get("LYRIC_GENIUS_KEY") == None):
-    print("Key is None")
-
-print("Experimental query params")
-print(st.experimental_get_query_params())
 
 model_name = "afnanmmir/t5-base-abstract-to-plain-language-1"
 max_input_length = 1024
@@ -48,13 +42,8 @@ if 'text' not in st.session_state:
 st_text_area = st.text_area('Song to generate recommendations for', value=st.session_state.text, height=500)
 
 
-# genius_key = os.environ.get('LYRIC_GENIUS_KEY')
-genius_key = st.secrets['LYRIC_GENIUS_KEY']
-if (genius_key == None or genius_key == ""):
-    print("The genius key is: ", str(genius_key))
+genius_key = os.environ.get('LYRIC_GENIUS_KEY')
 genius = lyricsgenius.Genius(genius_key, skip_non_songs=True, excluded_terms=["(Remix)", "(Live)"], remove_section_headers=True, timeout = 60)
-print("Genius is: ")
-print(str(genius))
 
 def get_lyrics(song_name, artist_name):
     try:
@@ -79,6 +68,8 @@ def generate_song():
     st.session_state.text = st_text_area
     
     print(st_text_area)
+
+    song_featues = get_song_features(st_text_area)
 
     input_text = st_text_area
     input_text = input_text.split(' by ')
@@ -106,10 +97,16 @@ def generate_song():
     print("Track IDs: ")
     print(track_ids)
 
-    st.session_state.summaries = [overall_summary]
+    nearest_songs = get_nearest_songs(track_ids, song_featues, 5)
+    ret_songs = list()
+    for song in nearest_songs:
+        ret_str = song + " by " + nearest_songs[song]
+        ret_songs.append(ret_str)
+
+    st.session_state.summaries = ret_songs
 
 # generate summary button
-st_generate_button = st.button('Generate summary', on_click=generate_song)
+st_generate_button = st.button('Generate recommendations', on_click=generate_song)
 
 # summary generation labels
 if 'summaries' not in st.session_state:
@@ -117,6 +114,6 @@ if 'summaries' not in st.session_state:
 
 if len(st.session_state.summaries) > 0:
     with st.container():
-        st.subheader("Generated summaries")
+        st.subheader("Song recommendations:")
         for summary in st.session_state.summaries:
             st.markdown("__" + summary + "__")

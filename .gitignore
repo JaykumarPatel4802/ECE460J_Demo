@@ -2,12 +2,14 @@ env
 .env
 summarizer_model_params.pth
 cosine_similarity/__pycache__/
-cosine_similarity/combined_file_csv_format.csv
+cosine_similarity/combined_final_csv_format.csv
 cosine_similarity/description_vectorizer.pkl
 cosine_similarity/x_data.pkl
 predict_summaries/__pycache__/
 predict_summaries/summarizer_model_params.pth
+nearest_song/sampled_dataset_final.csv
 *.zip
 *.pth
 *.pkl
+.csv
 test.py
